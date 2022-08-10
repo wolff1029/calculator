@@ -1,0 +1,25 @@
+
+.container{
+  display:grid;
+  grid-template: repeat(7,1fr)/ repeat(4,1fr);
+  margin-left: 43%;
+  margin-right: 43%;
+  width: 14%;
+  height: 370px;
+  justify-content: center;
+
+}
+.button {
+  border-style: solid;
+  border-color: black;
+  text-align: center;
+}
+.display{
+  border-style: solid;
+  border-color: black;
+  grid-column: 1/ span 4;
+  text-align: right;
+}
+.zero{
+  grid-column: 1/ span 2;
+}
