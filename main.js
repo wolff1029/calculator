@@ -27,6 +27,12 @@ function divide(a, b) {
     }
     return;
 }
+function invert(a) {
+    if (Number.isFinite(a)) {
+        return a * -1;
+    }
+    return a;
+}
 function operate(operator, a, b) {
 
     //console.log({ operator });
@@ -38,6 +44,8 @@ function operate(operator, a, b) {
         return divide(a, b);
     } else if (operator == 'x') {
         return multiply(a, b);
+    } else if (operator == '+/-') {
+        return invert(a);
     }
 }
 
@@ -46,59 +54,71 @@ function handleOnClick(e) {
     const display = document.querySelector('.display');
     //console.log(innerText);
     if (Number.isFinite(+innerText)) {
-        if (lastClick == 'operator') {
-            lastNumber = currentNumber;
-            currentNumber = innerText;
-            display.innerText = currentNumber;
-
-        } else if (lastClick == '') {
-            runningTotal = +innerText;
-            currentNumber = +innerText;
-
-            display.innerText = runningTotal;
-            console.log({ runningTotal })
+        if (numbers[0] === '') {
+            numbers[0] = innerText;
+            display.innerText = numbers[0];
+            console.log(`numbers[0] = ${numbers[0]}`)
+        } else if (lastClick === 'number') {
+            numbers[0] += innerText;
+            display.innerText = numbers[0];
+            console.log(`numbers[0] = ${numbers[0]}`)
         } else {
-            currentNumber += innerText;
-            display.innerText = currentNumber;
-            console.log({ currentNumber })
+            numbers[1] = numbers[0];
+            numbers[0] = innerText;
+            display.innerText = numbers[0];
+            console.log(`numbers[0] = ${numbers[0]}`);
+            console.log(`numbers[1] = ${numbers[1]}`);
+
         }
         lastClick = 'number';
-        console.log({ runningTotal });
     } else {
-        lastClick = 'operator';
-        if (innerText === '=') {
-            console.log({ runningTotal });
-            console.log('before');
-
-            runningTotal = operate(currentOperator, runningTotal, +currentNumber);
-            currentNumber = runningTotal;
+        if (innerText === '=' && lastClick !== 'operator') {
+            if (runningTotal === '') {
+                runningTotal = operate(currentOperator, +numbers[0], +numbers[1]);
+            } else {
+                runningTotal = operate(currentOperator, runningTotal, +numbers[0]);
+            }
+            console.log({ runningTotal })
             display.innerText = runningTotal;
-            lastNumber = '';
-            console.log({ runningTotal });
-
         } else if (innerText === 'AC') {
             lastClick = ''
-            runningTotal = 0;
+            runningTotal = '';
             currentOperator = '';
-            currentNumber = '';
-            display.innerText = runningTotal;
+            numbers = [''];
+            display.innerText = 0;
+        } else if (false) {
+            //innerText === '+/-'
+            if (lastClick == 'number') {
+                numbers[0] = operate(currentOperator, +numbers[0], runningTotal)?.toString();
+                display.innerText = numbers[0];
+            } else if (lastClick == 'operator') {
+                runningTotal = operate(currentOperator, runningTotal, +numbers[0]);
+                display.innerText = runningTotal;
+            }
+
         }
+
         currentOperator = innerText;
-        if (innerText !== '=' && innerText !== 'AC' && lastNumber != '') {
-            runningTotal = operate(currentOperator, runningTotal, +currentNumber);
+        console.log(`currentOperator = ${currentOperator}  | runningTotal ${runningTotal} | currentNumber ${+numbers[0]}   | lastNumber ${+numbers[1]}  | numbers.length ${numbers.length} | lastClick ${lastClick}`)
+
+        if (innerText !== 'AC' && innerText !== '=' && lastClick !== 'operator' && numbers.length === 2) {
+            if (runningTotal === '') {
+                runningTotal = operate(currentOperator, +numbers[0], +numbers[1]);
+            } else {
+                runningTotal = operate(currentOperator, runningTotal, +numbers[0]);
+            }
             display.innerText = runningTotal;
 
         }
-        console.log({ currentOperator });
-        console.log({ runningTotal });
-        console.log({ currentNumber });
+        lastClick = 'operator';
     }
 }
 let lastClick = ''
-let runningTotal = 0;
+let runningTotal = '';
 let currentOperator = '';
-let lastNumber = '';
-let currentNumber = '';
+
+
+let numbers = [''];
 
 const buttons = Array.from(document.querySelectorAll('.button'));
 buttons.forEach(val => {
