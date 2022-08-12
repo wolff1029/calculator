@@ -25,6 +25,7 @@ body{
   align-items: center;
   justify-content: center;
   font-size: large;
+  transition: all .07s ease;
 
 }
 .display{
@@ -76,4 +77,7 @@ body{
 }
 .xDark:active{
   opacity: 0.75;
+}
+.clicked {
+  transform: scale(1.05);
 }
